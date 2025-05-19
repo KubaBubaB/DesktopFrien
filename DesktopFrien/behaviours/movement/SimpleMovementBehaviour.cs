@@ -18,6 +18,8 @@ namespace DesktopFrien.behaviours.movement
         private readonly double _screenWidth = SystemParameters.PrimaryScreenWidth;
         private readonly double _screenHeight = SystemParameters.PrimaryScreenHeight;
         private Random _random = new Random();
+        private int ticks = 100;
+        private bool shouldMove = true;
 
         public SimpleMovementBehaviour()
         {
@@ -27,8 +29,33 @@ namespace DesktopFrien.behaviours.movement
 
         public override Point2D GetNextValue()
         {
-            // jitter the heading slightly for smooth nonlinear path
-            double delta = (_random.NextDouble() * 2 - 1) * MAX_TURN_RATE;
+            if (!shouldMove)
+            {
+                if (--ticks == 0)
+                {
+                    shouldMove = true;
+                    ticks = 200;
+                }
+                return new Point2D((int)Math.Round(_x), (int)Math.Round(_y));
+            }
+
+            // check for grace period
+            if (ticks > 0)
+            {
+                ticks--;
+
+            }
+            else
+            {
+                if (_random.Next(100) == 69)
+                {
+                    shouldMove = false;
+                    ticks = _random.Next(100, 200);
+                }
+            }
+
+             // jitter the heading slightly for smooth nonlinear path
+             double delta = (_random.NextDouble() * 2 - 1) * MAX_TURN_RATE;
             _angle += delta;
 
             // compute next position at constant speed

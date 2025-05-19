@@ -12,7 +12,7 @@ A roadmap for the Desktop Frien project. This is a work in progress and will be 
 
 ### Features
 - [ ] Frien should be animated
-- [ ] Frien should be moving across the screen in random, but naturally looking patterns (maybe radnomly choose a point on the screen and go to it)
+- [x] Frien should be moving across the screen in random, but naturally looking patterns (maybe radnomly choose a point on the screen and go to it)
 - [ ] Frien application should have a menu, but it should be hidden in tha "show hidden icons" area (like the volume, network, etc.)"
 - [ ] Frien should be able to become bored/eepy/hungy and those stats should influence the way Frien behaves
 - [ ] Menu should contain the following items:
@@ -28,5 +28,5 @@ A roadmap for the Desktop Frien project. This is a work in progress and will be 
 
 ### Miscellaneous
 - [ ] Run on startup
-- [ ] Think about features (TTS?, switchable deletion of files if Frien is angy?)
+- [ ] Think about features (TTS?, switchable deletion of files if Frien is angy?, integrated chatbot?)
 - [ ] Uninstaller

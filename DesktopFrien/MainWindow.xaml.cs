@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using DesktopFrien.behaviours.movement;
+using DesktopFrien.data;
 
 namespace DesktopFrien
 {
@@ -19,24 +20,64 @@ namespace DesktopFrien
     public partial class MainWindow : Window
     {
         private readonly BitmapImage _frienImage;
-        private readonly DispatcherTimer _movementTimer;
+        private DispatcherTimer movementTimer;
         private IMovementBehaviour _movementBehaviour = new SimpleMovementBehaviour();
+        private DispatcherTimer statsTimer;
+
+        private PersistentData _persData;
+
 
         public MainWindow()
         {
             InitializeComponent();
 
-            // Load image from resources
             _frienImage = new BitmapImage(new Uri("pack://application:,,,/media/FrienImage.png"));
             FrienImage.Source = _frienImage;
 
-            // Start animation
-            _movementTimer = new DispatcherTimer
+            bool doesSaveExists = false; // Check if save exists (placeholder logic, implement actual check)
+            if (doesSaveExists)
             {
-                Interval = TimeSpan.FromMilliseconds(5) // ~60 FPS
+                // load save file and set data
+            }
+            else
+            {
+                _persData = new PersistentData();
+            }
+
+            StartStatsTimer();
+            StartMovementTimer();
+        }
+
+        private void StartStatsTimer()
+        {
+            statsTimer = new DispatcherTimer();
+            statsTimer.Interval = TimeSpan.FromMinutes(1);
+            statsTimer.Tick += (s, e) => UpdateStatsMenu();
+            statsTimer.Start();
+        }
+
+        private void StartMovementTimer()
+        {
+            // Start animation
+            movementTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(5)
             };
-            _movementTimer.Tick += MoveFrien;
-            _movementTimer.Start();
+            movementTimer.Tick += MoveFrien;
+            movementTimer.Start();
+        }
+
+        private void UpdateStatsMenu()
+        {
+            // TODO: Implement saving stats to file after update
+            if (BoredomStat != null)
+                BoredomStat.Header = $"Boredom: {_persData._stats._boredom}";
+
+            if (EepynessStat != null)
+                EepynessStat.Header = $"Eepyness: {_persData._stats._eepyness}";
+
+            if (HungeerStat != null)
+                HungeerStat.Header = $"Hungeer: {_persData._stats._hunger}";
         }
 
         private void MoveFrien(object sender, EventArgs e)
@@ -45,6 +86,26 @@ namespace DesktopFrien
 
             Left = nextVal.X;
             Top = nextVal.Y;
+        }
+
+        private void EnableFrien(object sender, RoutedEventArgs e)
+        {
+            if (_persData._isVisible)
+            {
+                _persData._isVisible = false;
+                this.Hide();
+            }
+            else
+            {
+                _persData._isVisible = true;
+                this.Show();
+            }
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            TrayIcon.Dispose(); // Cleanly remove tray icon
+            Application.Current.Shutdown();
         }
     }
 }

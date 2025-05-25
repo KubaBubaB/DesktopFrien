@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DesktopFrien.data
 {
-    internal class Point2D
+    public class Point2D
     {
         public double X { get; set; }
         public double Y { get; set; }

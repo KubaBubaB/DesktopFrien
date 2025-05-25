@@ -26,6 +26,9 @@ namespace DesktopFrien
 
         private PersistentData _persData;
 
+        private Image honeyImage;
+        private bool isDraggingHoney = false;
+
 
         public MainWindow()
         {
@@ -48,23 +51,14 @@ namespace DesktopFrien
             StartMovementTimer();
         }
 
+        //region STATS REGION
+
         private void StartStatsTimer()
         {
             statsTimer = new DispatcherTimer();
             statsTimer.Interval = TimeSpan.FromMinutes(1);
             statsTimer.Tick += (s, e) => UpdateStatsMenu();
             statsTimer.Start();
-        }
-
-        private void StartMovementTimer()
-        {
-            // Start animation
-            movementTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(5)
-            };
-            movementTimer.Tick += MoveFrien;
-            movementTimer.Start();
         }
 
         private void UpdateStatsMenu()
@@ -80,6 +74,21 @@ namespace DesktopFrien
                 HungeerStat.Header = $"Hungeer: {_persData._stats._hunger}";
         }
 
+        // endregion
+
+        // region MOVEMENT
+
+        private void StartMovementTimer()
+        {
+            // Start animation
+            movementTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(5)
+            };
+            movementTimer.Tick += MoveFrien;
+            movementTimer.Start();
+        }
+
         private void MoveFrien(object sender, EventArgs e)
         {
             var nextVal = _movementBehaviour.GetNextValue();
@@ -87,6 +96,27 @@ namespace DesktopFrien
             Left = nextVal.X;
             Top = nextVal.Y;
         }
+
+        // endregion
+
+        // region FOOD
+
+        private void SpawnHoney_Click(object sender, RoutedEventArgs e)
+        {
+            var honey = new HoneyWindow(GoTowardFood);
+            honey.Show();
+        }
+
+        private void GoTowardFood(Func<Point2D> foodPositionGetter)
+        {
+            movementTimer.Stop();
+            _movementBehaviour = new TargetedMovementBehaviour(_movementBehaviour.GetNextValue(), foodPositionGetter);
+            movementTimer.Start();
+        }
+
+        // endregion
+
+        // region SETTINGS AND EXIT
 
         private void EnableFrien(object sender, RoutedEventArgs e)
         {
@@ -107,5 +137,7 @@ namespace DesktopFrien
             TrayIcon.Dispose(); // Cleanly remove tray icon
             Application.Current.Shutdown();
         }
+
+        // endregion
     }
 }

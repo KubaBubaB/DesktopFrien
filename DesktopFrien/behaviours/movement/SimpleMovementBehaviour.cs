@@ -23,7 +23,13 @@ namespace DesktopFrien.behaviours.movement
 
         public SimpleMovementBehaviour()
         {
-            // initialize with a random heading
+            _angle = _random.NextDouble() * 2 * Math.PI;
+        }
+
+        public SimpleMovementBehaviour(Point2D currentPoint)
+        {
+            this._x = currentPoint.X;
+            this._y = currentPoint.Y;
             _angle = _random.NextDouble() * 2 * Math.PI;
         }
 

@@ -21,7 +21,9 @@ A roadmap for the Desktop Frien project. This is a work in progress and will be 
 - [x] Menu should contain the following items:
   - [x] Show/Hide Frien
   - [ ] Spawn things to play with
-  - [ ] Spawn things to eat
+  - [x] Spawn things to eat
+      - [x] honey
+      - [ ] ?
   - [ ] eat things
   - [ ] Play with things
   - [x] Show stats (hunger, happiness, eepyness etc.)
@@ -30,6 +32,7 @@ A roadmap for the Desktop Frien project. This is a work in progress and will be 
 - [ ] Frien should be able to spawn memes (open images that are in the media/memes folder) 
     - [ ] and drag them from off the screen to the screen
 - [ ] Frien should be able to talk (display a message like in a comic book)
+- [x] Frien should follow food (he really likes food, so if he sees food, he should go to it))
 - [ ] Frien should be able to spawn notepad 
     - [ ] open txt files that are in the media/notepads folder or create them
     - [ ] and drag them from off the screen to the screen

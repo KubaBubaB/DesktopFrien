@@ -28,7 +28,7 @@ A roadmap for the Desktop Frien project. This is a work in progress and will be 
   - [ ] Play with things
   - [x] Show stats (hunger, happiness, eepyness etc.)
   - [x] Settings
-      - [ ] Add how fast Frien gets bored, tired, hungry
+      - [x] Add how fast Frien gets bored, tired, hungry
   - [x] Quit
 - [ ] Frien should be able to spawn memes (open images that are in the media/memes folder) 
     - [ ] and drag them from off the screen to the screen

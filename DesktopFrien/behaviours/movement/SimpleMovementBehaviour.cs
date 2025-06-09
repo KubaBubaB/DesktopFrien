@@ -33,6 +33,11 @@ namespace DesktopFrien.behaviours.movement
             _angle = _random.NextDouble() * 2 * Math.PI;
         }
 
+        public override Point2D GetCurrentPosition()
+        {
+            return new Point2D(_x, _y);
+        }
+
         public override Point2D GetNextValue()
         {
             if (!shouldMove)

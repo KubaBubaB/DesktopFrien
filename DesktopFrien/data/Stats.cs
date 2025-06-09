@@ -26,5 +26,12 @@ namespace DesktopFrien.data
             _hunger = hunger;
             _eepyness = eepyness;
         }
+
+        public void UpdateStats()
+        {
+            _boredom = Math.Min(100, _boredom + 1);
+            _hunger = Math.Min(100, _hunger + 1);
+            _eepyness = Math.Min(100, _eepyness + 1);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DesktopFrien.behaviours.movement
 {
@@ -13,13 +14,22 @@ namespace DesktopFrien.behaviours.movement
         private double _x;
         private double _y;
         private Func<Point2D> targetPositionGetter;
+        private Action<Window> reachMovementTargetAction;
+        private Window targetWindow;
 
 
-        public TargetedMovementBehaviour(Point2D currentPosition, Func<Point2D> targetPositionGetter)
+        public TargetedMovementBehaviour(Point2D currentPosition, Func<Point2D> targetPositionGetter, Action<Window> reachMovementTargetAction, Window targetWindow)
         {
             this._x = currentPosition.X;
             this._y = currentPosition.Y;
             this.targetPositionGetter = targetPositionGetter;
+            this.reachMovementTargetAction = reachMovementTargetAction;
+            this.targetWindow = targetWindow;
+        }
+
+        public override Point2D GetCurrentPosition()
+        {
+            return new Point2D(_x, _y);
         }
 
         public override Point2D GetNextValue()
@@ -30,8 +40,9 @@ namespace DesktopFrien.behaviours.movement
             double directionY = pos.Y - _y;
             double distance = Math.Sqrt(directionX * directionX + directionY * directionY);
 
-            if (distance < 1e-5) // close enough to the target
+            if (distance <= 1) // close enough to the target
             {
+                reachMovementTargetAction?.Invoke(targetWindow); // invoke the end movement action
                 return new Point2D(_x, _y); // no movement needed
             }
             else {

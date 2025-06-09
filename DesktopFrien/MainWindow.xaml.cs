@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using DesktopFrien.behaviours.movement;
+using DesktopFrien.data;
+using System.Media;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,8 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using DesktopFrien.behaviours.movement;
-using DesktopFrien.data;
 
 namespace DesktopFrien
 {
@@ -23,11 +24,15 @@ namespace DesktopFrien
         private DispatcherTimer movementTimer;
         private IMovementBehaviour _movementBehaviour = new SimpleMovementBehaviour();
         private DispatcherTimer statsTimer;
-
+        private double probabilityOfStatsIncreaseEverySecond = 9e-4; // full stats in aprox 3 hours
         private PersistentData _persData;
 
         private Image honeyImage;
         private bool isDraggingHoney = false;
+
+        private List<Window> _windows = new List<Window>();
+
+        private Random random = new Random();
 
 
         public MainWindow()
@@ -47,6 +52,7 @@ namespace DesktopFrien
                 _persData = new PersistentData();
             }
 
+            SetSettings();
             StartStatsTimer();
             StartMovementTimer();
         }
@@ -56,13 +62,18 @@ namespace DesktopFrien
         private void StartStatsTimer()
         {
             statsTimer = new DispatcherTimer();
-            statsTimer.Interval = TimeSpan.FromMinutes(1);
+            statsTimer.Interval = TimeSpan.FromSeconds(1);
             statsTimer.Tick += (s, e) => UpdateStatsMenu();
             statsTimer.Start();
         }
 
         private void UpdateStatsMenu()
         {
+            if (_persData == null || _persData._stats == null) return; // Ensure data is loaded
+            if (random.NextDouble() <= probabilityOfStatsIncreaseEverySecond)
+            {
+                _persData._stats.UpdateStats();
+            }
             // TODO: Implement saving stats to file after update
             if (BoredomStat != null)
                 BoredomStat.Header = $"Boredom: {_persData._stats._boredom}";
@@ -97,6 +108,13 @@ namespace DesktopFrien
             Top = nextVal.Y;
         }
 
+        private void SetMovement(IMovementBehaviour movementBehaviour)
+        {
+            movementTimer.Stop();
+            _movementBehaviour = movementBehaviour;
+            movementTimer.Start();
+        }
+
         // endregion
 
         // region FOOD
@@ -104,19 +122,92 @@ namespace DesktopFrien
         private void SpawnHoney_Click(object sender, RoutedEventArgs e)
         {
             var honey = new HoneyWindow(GoTowardFood);
+            _windows.Add(honey);
             honey.Show();
         }
 
-        private void GoTowardFood(Func<Point2D> foodPositionGetter)
+        private void GoTowardFood(Func<Point2D> foodPositionGetter, Window foodWindow)
+        {
+            SetMovement(new TargetedMovementBehaviour(_movementBehaviour.GetNextValue(), foodPositionGetter, EatFood, foodWindow));
+        }
+
+        private void EatFood(Window foodWindow)
         {
             movementTimer.Stop();
-            _movementBehaviour = new TargetedMovementBehaviour(_movementBehaviour.GetNextValue(), foodPositionGetter);
+            foodWindow.Close(); 
+            _movementBehaviour = new SimpleMovementBehaviour(_movementBehaviour.GetCurrentPosition());
+            SoundPlayer player = new SoundPlayer("media/honeyChew.wav");
+            player.Load();
+            player.Play();
             movementTimer.Start();
+            _persData._stats._hunger -= 10;
         }
 
         // endregion
 
         // region SETTINGS AND EXIT
+
+        private void SpeedRadio_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem mi)
+            {
+                switch (mi.Tag)
+                {
+                    case "Slow":
+                        SpeedSlowRadio.IsChecked = true;
+                        probabilityOfStatsIncreaseEverySecond = 3e-4; // full stats in aprox 8 hours
+                        break;
+                    case "Normal":
+                        SpeedNormalRadio.IsChecked = true;
+                        probabilityOfStatsIncreaseEverySecond = 9e-4; // full stats in aprox 3 hours
+                        break;
+                    case "Fast":
+                        SpeedFastRadio.IsChecked = true;
+                        probabilityOfStatsIncreaseEverySecond = 0.003; // full stats in aprox 1 hour
+                        break;
+                }
+            }
+            else if (sender is RadioButton radioButt)
+            {
+                switch (radioButt.Tag)
+                {
+                    case "Slow":
+                        SpeedSlowRadio.IsChecked = true;
+                        probabilityOfStatsIncreaseEverySecond = 3e-4; // full stats in aprox 8 hours
+                        break;
+                    case "Normal":
+                        SpeedNormalRadio.IsChecked = true;
+                        probabilityOfStatsIncreaseEverySecond = 9e-4; // full stats in aprox 3 hours
+                        break;
+                    case "Fast":
+                        SpeedFastRadio.IsChecked = true;
+                        probabilityOfStatsIncreaseEverySecond = 0.003; // full stats in aprox 1 hour
+                        break;
+                }
+            }
+        }
+
+        private void SetSettings()
+        {
+            SetSpeed(_persData._speedOfStats);
+        }
+
+        private void SetSpeed(string speed)
+        {
+            switch (speed)
+            {
+                case "slow":
+                    SpeedSlowRadio.IsChecked = true;
+                    break;
+                
+                case "fast":
+                    SpeedFastRadio.IsChecked = true;
+                    break;
+                default:
+                    SpeedNormalRadio.IsChecked = true;
+                    break;
+            }
+        }
 
         private void EnableFrien(object sender, RoutedEventArgs e)
         {

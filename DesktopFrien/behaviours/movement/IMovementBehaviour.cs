@@ -10,5 +10,6 @@ namespace DesktopFrien.behaviours.movement
     abstract class IMovementBehaviour
     {
         public abstract Point2D GetNextValue();
+        public abstract Point2D GetCurrentPosition();
     }
 }

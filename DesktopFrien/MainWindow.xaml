@@ -25,6 +25,23 @@
                     </MenuItem>
                     <MenuItem Header="Settings">
                         <MenuItem Header="Enable Frien" IsCheckable="True" IsChecked="True" Click="EnableFrien"/>
+                        <MenuItem Header="Stats increase speed">
+                            <MenuItem Header="Slow" StaysOpenOnClick="True" Click="SpeedRadio_Checked" Tag="Slow">
+                                <MenuItem.Icon>
+                                    <RadioButton x:Name="SpeedSlowRadio" GroupName="SpeedGroup" Click="SpeedRadio_Checked" Tag="Slow"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Normal" StaysOpenOnClick="True" Click="SpeedRadio_Checked" Tag="Normal">
+                                <MenuItem.Icon>
+                                    <RadioButton x:Name="SpeedNormalRadio" GroupName="SpeedGroup" Click="SpeedRadio_Checked" Tag="Normal"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Fast" StaysOpenOnClick="True" Click="SpeedRadio_Checked" Tag="Fast">
+                                <MenuItem.Icon>
+                                    <RadioButton x:Name="SpeedFastRadio" GroupName="SpeedGroup" Click="SpeedRadio_Checked" Tag="Fast"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
                     </MenuItem>
                     <MenuItem Header="Stats" x:Name="StatsMenu">
                         <MenuItem x:Name="BoredomStat" Header="Boredom: 0" IsEnabled="False"/>

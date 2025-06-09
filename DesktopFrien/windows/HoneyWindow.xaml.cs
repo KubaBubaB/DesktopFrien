@@ -22,7 +22,7 @@ namespace DesktopFrien
         private DispatcherTimer followTimer;
         private Action<Func<Point2D>> activateFrienFollowingFood;
 
-        public HoneyWindow(Action<Func<Point2D>> activateFrienFollowingFood)
+        public HoneyWindow(Action<Func<Point2D>, Window> activateFrienFollowingFood)
         {
             InitializeComponent();
 
@@ -32,7 +32,7 @@ namespace DesktopFrien
             followTimer.Interval = TimeSpan.FromMilliseconds(5);
             followTimer.Tick += FollowMouse;
             followTimer.Start();
-            activateFrienFollowingFood(GetPoint);
+            activateFrienFollowingFood(GetPoint, this);
         }
 
         private Point2D GetPoint()
